@@ -7,10 +7,16 @@ from csv import writer
 current_datetime = datetime.now()
 print(f"Current Date and Time: {current_datetime}")
 
-folder_path = "datos_temps"
-archivo = Path("temps.csv")
-file_path = os.path.join(folder_path, archivo)
-header = ["Fecha", "Temperatura_MIN", "Temperatura_MAX"]
+data_folder = "temps_folder"
+archivo = "temps.csv"
+
+folder_path = Path(data_folder)
+file_path = folder_path / archivo
+
+# Crear la carpeta si no existe.
+folder_path.mkdir(exist_ok=True)
+
+header = ["FECHA", "TEMP_MIN", "TEMP_MAX"]
 
 # Pida al usuario que ingrese la temperatura minima y maxima del dia (numeros decimales)
 inp_fecha = input("Por favor introduzca la fecha del dia que quiere reportar las temperaturas: ")
@@ -34,16 +40,15 @@ data = [inp_fecha, inp_temp_min, inp_temp_max]
 
 # Crea un script que:
 # Verifique si existe el archivo data/temps.csv
-if archivo.is_file():
-    print(f"El archivo '{archivo}' ya existe")
-else:
-    print(f"El archivo '{archivo}' no existe")
+file_exists = file_path.exists()
+
 # Si NO existe, crea el archivo con encabezados "fecha", "temperatura_min", "temp_max"
 # Anada una fila con la fecha actual y las temperaturas ingresadas al archivo temps.csv
-with open(file_path, 'w', newline='') as csvfile:
+with open(file_path, 'a', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
-    csv_writer.writerow(header)
+    if not file_exists:
+        csv_writer.writerow(header)
     csv_writer.writerow(data)
 
-print(f"Archivo CSV '{archivo}' se creo correctamente con los datos ingresados")
+print(f"Archivo CSV '{file_path}' se creo correctamente con los datos ingresados")
 
